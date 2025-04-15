@@ -1,0 +1,246 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+
+body {
+    background-color: #ffffff;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header img {
+    height: 60px;
+}
+
+nav {
+    display: flex;
+    gap: 15px;
+}
+
+
+nav a {
+    padding: 15px 30px;
+    background-color: #a8d5af;
+    border-radius: 30px;
+    text-decoration: none;
+    color: #2e593f;
+    font-weight: bold;
+    font-size: larger;
+    transition: background-color 0.3s;
+}
+
+nav a:hover{
+    background-color: #1f4129;
+    color: #ffffff;
+}
+nav a:active{
+    background-color: #1f4129;
+    color: #ffffff;
+}
+
+.prakriti-header {
+    text-align: center;
+    padding: 2rem;
+    background-color: #eaf8f0;
+    color: #006400;
+}
+
+.prakriti-header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.prakriti-header p {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.prakriti-section {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 2rem;
+}
+
+/* Card Styles */
+.prakriti-card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 350px;
+    height:300px;
+    margin: 1rem;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover animation */
+    opacity: 0; /* Start with invisible for entry animation */
+    transform: translateY(30px); /* Start with offset position */
+    animation: fadeInUp 0.8s ease forwards; /* Entry animation */
+}
+
+.prakriti-card h2 {
+    color: #006400;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.prakriti-card ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.prakriti-card li {
+    margin-bottom: 0.5rem;
+    margin-top: 1rem
+}
+
+/* Hover Effects */
+/* .prakriti-card:hover {
+    transform: translateY(-10px); /* Move slightly upward */
+    /* box-shadow: 0 8px 16px rgba(147, 237, 147, 0.2); Add deeper shadow */
+.prakriti-card:hover {
+    transform: translateY(-10px); /* Move card slightly upward */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add deeper shadow */
+    background-color: #caf2e3; /* Add a subtle background color change */
+}
+
+.prakriti-card:hover h2 {
+    transform: scale(1.2); /* Slightly enlarge the heading */
+    color: #228B22; /* Change the heading color */
+}
+
+.prakriti-card:hover p {
+    transform: translateY(10px); /* Move the paragraph slightly down */
+    color: #0d0d0d; /* Change paragraph color */
+}
+
+
+/* Footer Styles */
+.footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #a8d5ba;
+    color: #333;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Keyframes for Entry Animation */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Delay Animation for Cards */
+.prakriti-card:nth-child(1) {
+    animation-delay: 0.2s;
+}
+.prakriti-card:nth-child(2) {
+    animation-delay: 0.4s;
+}
+.prakriti-card:nth-child(3) {
+    animation-delay: 0.6s;
+}
+.chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    background-color: #6f66ee;
+    color: #ffffff;
+    border-radius: 50%;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+
+  }
+  .chatbot-button:hover {
+    background-color: #7fa2b6;
+  }
+
+@media (min-width: 768px) {
+    header {
+        padding: 1rem 3rem;
+    }
+
+    nav {
+        gap: 2rem;
+    }
+
+    .text-content h2 {
+        font-size: 2.5rem;
+    }
+
+    .text-content p {
+        font-size: 1.5rem;
+    }
+
+    .chakra-image img{
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 767px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .text-content h2 {
+        font-size: 1.8rem;
+    }
+
+    .text-content p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .text-content p {
+        font-size: 0.9rem;
+    }
+
+    .text-content .button{
+        padding: 0.6rem 1rem;
+    }
+    .chatbot-button {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        right: 15px;
+    }
+
+}

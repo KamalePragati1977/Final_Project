@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AyurNiti Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .chatbot-container {
+      width: 350px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+      text-align: center;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .chatbot-header {
+      background: linear-gradient(90deg, #3366cc, #003399);
+      color: white;
+      border-radius: 12px 12px 0 0;
+      padding: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      max-height: 42vh; /* added max height to limit vertical size */
+     
+    }
+    .chatbot-header img {
+      margin-top: 5px;
+      width: 80px;
+      height: auto;
+    }
+    .chatbot-header::after {
+      content: '';
+      display: block;
+      margin-top: 10px;
+      background-image: url('image.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 100%;
+      height: 120px;
+    }
+    .input-group, .question, .result {
+      margin-top: 20px;
+    }
+    input, select, button {
+      padding: 10px;
+      width: 90%;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button {
+      background-color: #3366cc;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+    button:hover {
+      background-color: #003399;
+      transform: translateY(-2px);
+    }
+    .question {
+      display: none;
+    }
+    .question.active {
+      display: block;
+    }
+    .options button {
+      display: block;
+      margin: 10px 0;
+    }
+    .result ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+    .result li {
+      background: linear-gradient(90deg, #dffbe6, #b8f0cc);
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    #download-btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #4d4de6;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #download-btn:hover {
+      background-color: #3434aa;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #e0e0e0;
+      height: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3366cc, #003399);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .arrow-btns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .arrow-btns button {
+      width: 48%;
+    }
+    .question button.selected {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      border: 2px solid #1e7e34;
+    }
+    .info-icon {
+  float: right;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  color: #003399;
+  margin-left: 10px;
+}
+
+/* Popup container */
+#popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fffaf4;
+  border: 2px solid #deb887;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  width: 80%;
+  max-width: 600px;
+  z-index: 9999;
+  border-radius: 16px;
+  font-family: 'Georgia', serif;
+  color: #5e4b3c;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+/* Popup close button (optional) */
+#popup-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #9c6b30;
+}
+
+/* Description text */
+#popup-description {
+  white-space: pre-line;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* For dimming the background when popup is active */
+#popup-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9998;
+}
+
+/* Optional animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#popup {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="chatbot-container">
+    <div class="chatbot-header">
+      AyurNiti Chatbot
+      <img src="images/logo.png" alt="AyurNiti Image" style="width:100%; margin-top:10px; border-radius:12px;">
+    </div>
+
+    <div class="input-group" id="user-input">
+      <input type="text" id="name" placeholder="Enter your name">
+      <input type="number" id="age" placeholder="Enter your age">
+      <select id="gender">
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+      <button id="start-btn">Start Assessment</button>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div id="quiz"></div>
+    <div class="result" id="result"></div>
+    <button id="download-btn" style="display:none">Download PDF</button>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById("start-btn");
+    const quizContainer = document.getElementById("quiz");
+    const resultContainer = document.getElementById("result");
+    const progressFill = document.getElementById("progress-fill");
+    const downloadBtn = document.getElementById("download-btn");
+
+    const questions = [
+      { q: "How would you describe your body frame?", options: ["Slim & light", "Medium build", "Broad and heavy", "Lean but muscular"] },
+      { q: "How is your appetite?", options: ["Irregular", "Strong & sharp", "Slow but steady", "Highly variable"] },
+      { q: "How would you describe your sleep?", options: ["Light & interrupted", "Moderate", "Deep & long", "Hard to fall asleep"] },
+      { q: "How is your skin typically?", options: ["Dry & rough", "Warm & oily", "Cool & smooth", "Sensitive"] },
+      { q: "What is your emotional tendency?", options: ["Anxious", "Irritable", "Calm", "Excitable"] },
+      { q: "How do you handle stress?", options: ["Overthink", "Get angry", "Withdraw", "Get restless"] },
+      { q: "How is your digestion?", options: ["Variable", "Quick", "Slow", "Unpredictable"] },
+      { q: "How do you feel in cold weather?", options: ["Dislike it", "Enjoy it", "Neutral", "Prefer warmth"] },
+      { q: "Your energy levels are...", options: ["Fluctuating", "High but can burn out", "Consistent", "Spike randomly"] },
+      { q: "Your memory is...", options: ["Quick but forgetful", "Sharp & focused", "Slow but steady", "Erratic"] }
+    ];
+    const questionInfo = [
+  {
+    desc: `Body Frame Types
+Body frame refers to the natural structure and build of an individual, which is influenced by genetics and Dosha dominance in Ayurveda.
+
+Slim & Light: Typically seen in individuals with Vata dominance, characterized by a narrow bone structure, prominent joints, and low body fat. These people often appear delicate and thin.
+
+Medium Build: Common in Pitta types, this frame is marked by a moderate bone structure, good muscle tone, and balanced body proportions. The body appears athletic and well-shaped.
+
+Broad and Heavy: Indicative of Kapha dominance, these individuals have a larger bone structure, wide shoulders or hips, and a naturally stocky or heavyset build, often retaining more fat and strength.
+
+Lean but Muscular: A balanced mix, these individuals have a firm, toned appearance with defined muscles, suggesting a dynamic interplay between Vata and Pitta elements.`
+  },
+  {
+    desc: `Appetite & Metabolism
+Appetite in Ayurveda is guided by the strength of the digestive fire (Agni).
+
+Irregular: Common in Vata types; they may feel hungry at odd times or not at all, with frequent bloating.
+
+Strong & Sharp: Found in Pitta types who feel hungry often and may get irritable if meals are delayed.
+
+Slow but Steady: Reflects Kapha types, who eat less often and tend to have a slower metabolism.
+
+Highly Variable: Indicates doshic imbalance, where hunger patterns swing dramatically.`
+  },
+  {
+    desc: `Sleep Patterns
+Sleep habits provide insight into one's mind-body constitution.
+
+Light & Interrupted: Vata types may wake frequently and find it hard to stay asleep.
+
+Moderate: Pitta types typically fall asleep easily and rest well unless overheated.
+
+Deep & Long: Kapha types often enjoy heavy, prolonged sleep and may feel groggy.
+
+Hard to Fall Asleep: Imbalance or overstimulation can affect all doshas but often links to Vata.`
+  },
+  {
+    desc: `Skin Characteristics
+Skin reveals underlying doshic properties and balance.
+
+Dry & Rough: Typical of Vata, especially in colder climates or dry seasons.
+
+Warm & Oily: Pitta types tend to have sensitive, oily, or reddish skin.
+
+Cool & Smooth: Kapha skin is often soft, thick, and slightly moist.
+
+Sensitive: Indicative of imbalance, particularly in Pitta or mixed constitutions.`
+  },
+  {
+    desc: `Emotional Tendency
+Emotions are closely tied to the dominant dosha in an individual.
+
+Anxious: Vata types may worry frequently and experience nervous tension.
+
+Irritable: Pitta individuals are quick to anger and often perfectionistic.
+
+Calm: Kapha types are grounded, compassionate, and slow to react.
+
+Excitable: Could indicate Vata-Pitta mix or elevated mental stimulation.`
+  },
+  {
+    desc: `Stress Response
+How we cope under stress shows our doshic tendencies.
+
+Overthink: Vata types become overwhelmed with thoughts and fears.
+
+Get Angry: Pitta individuals may react with irritation or frustration.
+
+Withdraw: Kapha types tend to internalize stress and become passive.
+
+Get Restless: Suggests Vata dominance or imbalance.`
+  },
+  {
+    desc: `Digestive Pattern
+Digestion in Ayurveda is seen as a vital indicator of health.
+
+Variable: Vata digestion fluctuates, often leading to gas or constipation.
+
+Quick: Pitta digestion is strong, with a tendency toward acidity.
+
+Slow: Kapha digestion is sluggish, and metabolism tends to be low.
+
+Unpredictable: Often linked to imbalances in multiple doshas.`
+  },
+  {
+    desc: `Weather Sensitivity
+Reactions to climate changes highlight doshic responses.
+
+Dislike Cold: Vata types become stiff or uncomfortable in chilly weather.
+
+Enjoy Cold: Pitta individuals feel relief in cooler temperatures.
+
+Neutral: Kapha types adapt easily but prefer warmth to avoid congestion.
+
+Prefer Warmth: May indicate mixed Vata-Kapha constitution.`
+  },
+  {
+    desc: `Energy Levels
+The rhythm of your energy throughout the day is dosha-related.
+
+Fluctuating: Vata energy comes in bursts and is easily depleted.
+
+High but Burns Out: Pitta types are intense and productive but may overwork.
+
+Consistent: Kapha individuals are slow to start but can sustain energy.
+
+Spike Randomly: Often seen in Vata imbalance or excessive multitasking.`
+  },
+  {
+    desc: `Memory Type
+Ayurveda associates memory styles with mental energy of the doshas.
+
+Quick but Forgetful: Vata minds are fast but can lack retention.
+
+Sharp & Focused: Pitta individuals excel at analysis and detail.
+
+Slow but Steady: Kapha memory builds slowly but lasts longer.
+
+Erratic: Suggests mental disturbance or mixed doshic influence.`
+  }
+];
+
+
+function showPopup(index) {
+  const popup = document.getElementById("popup");
+  const popupImg = document.getElementById("popup-image");
+  const popupDesc = document.getElementById("popup-description");
+
+  popupImg.src = questionInfo[index].image;
+  popupDesc.innerText = questionInfo[index].desc;
+
+  popup.style.display = "flex";
+}
+
+    let currentQuestion = 0;
+    let answers = [];
+    let userName = '';
+    let userAge = '';
+    let userGender = '';
+    let userPrakriti = '';
+    let userTips = [];
+
+    function showQuestion() {
+  quizContainer.innerHTML = '';
+  if (currentQuestion < questions.length) {
+    const qObj = questions[currentQuestion];
+    const qDiv = document.createElement('div');
+    qDiv.classList.add('question', 'active');
+
+    const qTitle = document.createElement('h3');
+    qTitle.innerHTML = `${currentQuestion + 1}. ${qObj.q} <span class="info-icon" onclick="showPopup(${currentQuestion})">❗</span>`;
+    qDiv.appendChild(qTitle);
+
+    qObj.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.innerText = opt;
+
+      if (answers[currentQuestion] === idx) {
+        btn.classList.add('selected');
+      }
+
+      btn.onclick = () => {
+        answers[currentQuestion] = idx;
+        showQuestion();
+      };
+      qDiv.appendChild(btn);
+    });
+
+    const navDiv = document.createElement('div');
+    navDiv.classList.add('arrow-btns');
+
+    const prevBtn = document.createElement('button');
+    prevBtn.innerText = "← Previous";
+    prevBtn.disabled = currentQuestion === 0;
+    prevBtn.onclick = () => {
+      currentQuestion--;
+      showQuestion();
+    };
+    navDiv.appendChild(prevBtn);
+
+    const nextBtn = document.createElement('button');
+    nextBtn.innerText = (currentQuestion === questions.length - 1) ? "Finish →" : "Next →";
+    nextBtn.disabled = answers[currentQuestion] === undefined;
+    nextBtn.onclick = () => {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        showResult();
+      }
+    };
+    navDiv.appendChild(nextBtn);
+
+    qDiv.appendChild(navDiv);
+    quizContainer.appendChild(qDiv);
+
+    progressFill.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+  }
+}
+
+    function determinePrakriti() {
+      const score = answers.reduce((a, b) => a + b, 0);
+      if (score < 10) return "Vata";
+      if (score < 20) return "Pitta";
+      return "Kapha";
+    }
+
+    function showResult() {
+      quizContainer.innerHTML = '';
+      progressFill.style.width = `100%`;
+      const prakriti = determinePrakriti();
+
+      const tips = {
+        Vata: [
+          "Eat warm, moist, and grounding foods",
+          "Avoid raw and cold meals",
+          "Practice calming activities like yoga",
+          "Stay warm and avoid cold winds",
+          "Sleep early and maintain good rest",
+          "Stay hydrated with warm fluids"
+        ],
+        Pitta: [
+          "Eat fresh, cooling foods",
+          "Avoid spicy and fried foods",
+          "Spend time in nature",
+          "Avoid conflict and overexertion",
+          "Practice meditation or calming hobbies",
+          "Use coconut oil or aloe vera for skincare",
+         
+        ],
+        Kapha: [
+          "Wake up early and stay active",
+          "Eat light, dry, and warm meals",
+          "Avoid dairy and fried foods",
+          "Incorporate vigorous exercise",
+          "Engage in energizing routines",
+          "Practice deep breathing",
+          
+        ]
+      };
+
+      userPrakriti = prakriti;
+      userTips = tips[prakriti];
+
+      resultContainer.innerHTML = `
+        <h3>${userName}, your Prakriti Type is: ${prakriti}</h3>
+        <ul>
+          ${userTips.map((tip, idx) => `<li><strong>Tip ${idx + 1}:</strong> ${tip}</li>`).join('')}
+        </ul>
+        <p style="margin-top: 20px; font-size: 12px; color: #888;">© 2025 AyurNiti | For educational purposes only</p>
+      `;
+      downloadBtn.style.display = "inline-block";
+    }
+
+    startBtn.addEventListener("click", () => {
+      const nameInput = document.getElementById("name").value;
+      const ageInput = document.getElementById("age").value;
+      const genderInput = document.getElementById("gender").value;
+      if (!nameInput || !ageInput || !genderInput) {
+        alert("Please fill all fields.");
+        return;
+      }
+      userName = nameInput;
+      userAge = ageInput;
+      userGender = genderInput;
+      document.getElementById("user-input").style.display = "none";
+      showQuestion();
+    });
+
+    downloadBtn.addEventListener("click", () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("p", "mm", "a4");
+
+  const questionsAndAnswers = questions.map((q, i) => ({
+    q: q.q,
+    a: q.options[answers[i]] || "Not answered"
+  }));
+
+  // Border
+  doc.setDrawColor(34, 85, 51);
+  doc.setLineWidth(3);
+  doc.rect(5, 5, 200, 287);
+
+  // Header
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.setTextColor(0, 85, 51);
+  doc.text("AyurNiti Prakriti Assessment Report", 105, 20, { align: "center" });
+
+  // Info Box (compact and inline)
+  doc.setDrawColor(0, 102, 102);
+  doc.setFillColor(230, 255, 240);
+  doc.rect(20, 28, 170, 20, "FD");
+  doc.setFontSize(12);
+  doc.setTextColor(0);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Name: ${userName}   |   Age: ${userAge}   |   Gender: ${userGender}   |   Prakriti: ${userPrakriti}`, 25, 40);
+
+  // Response Box (blue)
+  // Response Box (blue)
+let y = 55;
+doc.setDrawColor(0, 0, 102);
+doc.setFillColor(240, 245, 255);
+doc.rect(20, y, 170, 160, "FD"); // ← increased from 130 to 150
+
+doc.setTextColor(0, 0, 102);
+doc.setFont("helvetica", "bold");
+doc.setFontSize(13);
+doc.text("Your Responses", 25, y + 8);
+
+y += 15;
+doc.setTextColor(0);
+doc.setFont("helvetica", "normal");
+doc.setFontSize(11);
+
+questionsAndAnswers.forEach((item, i) => {
+  doc.text(`${i + 1}. ${item.q}`, 25, y);
+  y += 6;
+  doc.text(`   Answer: ${item.a}`, 30, y);
+  y += 9;
+});
+
+  // Health Tips Box (after responses)
+  y += 1; // ← reduced space from the previous box
+doc.setDrawColor(0, 153, 0);
+doc.setFillColor(240, 255, 240);
+doc.rect(20, y, 170, 65, "FD");
+
+doc.setFont("helvetica", "bold");
+doc.setTextColor(0, 128, 0);
+doc.setFontSize(13);
+doc.text("Health Tips", 25, y + 8);
+
+doc.setFont("helvetica", "normal");
+doc.setTextColor(0);
+doc.setFontSize(11);
+let tipY = y + 16;
+userTips.forEach((tip) => {
+  doc.text(`• ${tip}`, 25, tipY);
+  tipY += 8;
+});
+  // Footer
+  doc.setTextColor(100);
+  doc.setFontSize(10);
+  doc.text("© 2025 AyurNiti | For educational purposes only", 105, 282, { align: "center" });
+
+  doc.save(`${userName}_Prakriti_Assessment.pdf`);
+});
+
+    
+  </script>
+  <script>
+    const toggleBtn = document.getElementById("chatbotToggle");
+    const container = document.getElementById("chatbotContainer");
+  
+    toggleBtn.addEventListener("click", () => {
+      container.style.display = container.style.display === "block" ? "none" : "block";
+    });
+  </script>
+  <div class="popup-overlay" id="popup">
+    <div class="popup-content">
+      <img id="popup-image" src="" alt="Question Help">
+      <p id="popup-description"></p>
+      <button class="popup-close" onclick="document.getElementById('popup').style.display='none'">Close</button>
+    </div>
+  </div>
+</body>
+</html>

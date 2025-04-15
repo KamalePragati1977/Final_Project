@@ -1,0 +1,157 @@
+body {
+    font-family: 'Arial', sans-serif; /* Clean and readable font */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6; /* Better readability */
+    background-color: #caf6e7; /* Light green background */
+    color: #333; /* Dark text color */
+  }
+  
+  h1, h2 {
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  h1 {
+    font-size: 28px;
+    color: #000; /* Black for headers */
+  }
+  
+  h2 {
+    font-size: 24px;
+    margin-top: 40px; /* Add spacing above sections */
+  }
+  
+  p {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  ul {
+    padding-left: 20px;
+    margin: 10px 0;
+  }
+  
+  ul li {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+  
+  .container {
+    max-width: 800px; 
+    height:600px;/* Limit the width of content */
+    margin: 20px auto; /* Center the content */
+    padding: 20px;
+    background-color: #e5f4df; /* White background for text */
+    border-radius: 8px; /* Smooth rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  strong {
+    color: #000; /* Bold highlights for strong tags */
+  }
+  
+  a {
+    color: #0066cc; /* Blue links */
+    text-decoration: none; /* Remove underline */
+  }
+  
+  a:hover {
+    text-decoration: underline; /* Underline on hover */
+  }
+  .back-button {
+    position: absolute; /* Adjust the position relative to the page */
+    top: 20px; /* Distance from the top */
+    left: 20px; /* Distance from the left */
+  }
+  
+  .back-button .button {
+    text-decoration: none; /* Remove underline */
+    background-color: #3f98dc; /* Green background */
+    color: white; /* White text */
+    padding: 10px 15px; /* Padding inside the button */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    display: inline-block; /* Make it look like a button */
+    
+  }
+  
+  .back-button .button:hover {
+    background-color: #1e3864; /* Darker green on hover */
+  }  
+  @media (min-width: 768px) {
+    header {
+        padding: 1rem 3rem;
+    }
+
+    nav {
+        gap: 2rem;
+    }
+
+    .text-content h2 {
+        font-size: 2.5rem;
+    }
+
+    .text-content p {
+        font-size: 1.5rem;
+    }
+
+    .chakra-image img{
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 767px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .text-content h2 {
+        font-size: 1.8rem;
+    }
+
+    .text-content p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .text-content p {
+        font-size: 0.9rem;
+    }
+
+    .text-content .button{
+        padding: 0.6rem 1rem;
+    }
+    .chatbot-button {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        right: 15px;
+    }
+    .container {
+        /* max-width: 800px; 
+        height:600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #e5f4df; 
+        border-radius: 8px; 
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+        height:900px;
+        
+      }
+      .back-button .button{
+        margin-bottom: 40px;
+      }
+    
+}

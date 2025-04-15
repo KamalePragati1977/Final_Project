@@ -1,0 +1,246 @@
+*{
+    margin:0;
+    padding:0;
+}
+  
+body{
+    background-color: #b8f2d8;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: #ffffff;
+    box-shadow: o 4px 8px rgba(0,0,0,0.1);
+}
+header img{
+    height: 3.75em;
+}
+nav{
+    gap: 25px;
+    display: flex;
+}
+nav a{
+    padding: 15px 30px;
+    background-color: #a8d5af;
+    border-radius: 30px;
+    text-decoration:none;
+    color: #2e593f;
+    font-weight: bold;
+    font-size: larger;
+    transition: background-color 0.3s;
+}
+nav a:hover{
+     background-color:#356544;
+     color: #ffffff;
+}
+nav a:active{
+    background-color: #1f4129;
+    color: #ffffff;
+}
+.main-section{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 30px;
+    gap: 30px;
+}
+.text-content{
+    max-width:50em;
+}
+.text-content img{
+    height:20px;
+    width:20px;
+    border-radius:5px;
+}
+.text-content h2{
+    color:black;
+    font-size:3em;
+    margin-bottom: 30px;
+
+}
+.text-content p{
+    color: black;
+    line-height:1.5;
+    align-items: center;
+    display: flex;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    font-size: larger;
+}
+.text-content p img{
+    width:27px;
+    height:27px;
+    vertical-align: middle;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+.text-content .button{
+    align-items: center;
+      gap: 50px; 
+      padding: 15px 30px;
+      background-color: #6f66ee;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9em;
+      text-decoration: none;
+      transition: background-color 0.3s;
+      margin-top: 500px;
+}
+.text-content .button:hover {
+    background-color: #4092c2;
+  }
+  .text-content .button img {
+    width: 30px; 
+    height:30px;
+    vertical-align: middle;
+    padding-bottom:5px;
+  }
+  .chakra-image img {
+    /* height: 550px;  */
+    width: auto;
+    border-radius: 5px;
+    transition: all 0.3s;
+  }
+  .chakra-image img:hover{
+    transform: translateY(-10px);
+    filter: drop-shadow(10px 10px 15px #356544);
+    transition: all 0.3s ;
+  }
+  .chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    background-color: #6f66ee;
+    color: #ffffff;
+    border-radius: 50%;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+
+  }
+  .chatbot-button:hover {
+    background-color: #7fa2b6;
+  }
+  @media (min-width: 768px) {
+    header {
+        padding: 1rem 3rem;
+    }
+
+    nav {
+        gap: 2rem;
+    }
+
+    .text-content h2 {
+        font-size: 2.5rem;
+    }
+
+    .text-content p {
+        font-size: 1.5rem;
+    }
+
+    .chakra-image img{
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 767px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .text-content h2 {
+        font-size: 1.8rem;
+    }
+
+    .text-content p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .text-content p {
+        font-size: 0.9rem;
+    }
+
+    .text-content .button{
+        padding: 0.6rem 1rem;
+    }
+    .chatbot-button {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        right: 15px;
+    }
+    .main-section{
+        flex-direction: column;
+    }
+    .chakra-image img{
+        width: 90%;
+        margin-inline: auto;
+    }
+    #menu-toggle {
+        display: none;
+      }
+  
+      /* Hamburger icon styling */
+      .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 20px;
+        cursor: pointer;
+      }
+  
+      .bar {
+        width: 100%;
+        height: 4px;
+        background-color: #4CAF50;
+        border-radius: 2px;
+        transition: all 0.3s ease-in-out;
+      }
+  
+      /* Menu styling */
+      .menu {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #f3f3f3;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+  
+      .menu a {
+        text-decoration: none;
+        color: #4CAF50;
+        font-size: 16px;
+        font-weight: bold;
+      }
+  
+      /* Toggle menu when checkbox is checked */
+      #menu-toggle:checked + .hamburger + .menu {
+        display: flex;
+      }
+    
+
+
+}

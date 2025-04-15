@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="services.css">
+    <style>
+        .chatbot-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #64B5F6; /* blue pastel */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 999;
+  transition: background-color 0.3s ease;
+}
+
+.chatbot-button:hover {
+  background-color: #42a5f5;
+}
+
+/* Modal Styles */
+.chatbot-modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Inner Container */
+.chatbot-wrapper {
+  position: relative;
+  margin: 5% auto;
+  max-width: 400px;
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+/* Close Button */
+.chatbot-close-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.chatbot-close-icon:hover {
+  background-color: #d32f2f;
+}
+
+.chatbot-container {
+      width: 380px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+      text-align: center;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+.chatbot-header {
+  background: linear-gradient(90deg, #64B5F6, #81C784);
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  max-height: 44vh;
+}
+
+.chatbot-header img {
+  /* margin-top: 3px; */
+  width: 60px;
+  height: 230px;
+}
+
+.chatbot-header::after {
+  content: '';
+  display: block;
+  margin-top: 5px;
+  background-image: url('image.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 44vh;
+}
+
+.input-group,
+.question,
+.result {
+  margin-top: 20px;
+}
+
+input,
+select,
+button {
+  padding: 10px;
+  width: 90%;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #64B5F6;
+  box-shadow: 0 0 5px rgba(100, 181, 246, 0.4);
+}
+
+button {
+  background-color: #64B5F6;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+button:hover {
+  background-color: #42a5f5;
+  transform: translateY(-2px);
+}
+
+.question {
+  display: none;
+}
+
+.question.active {
+  display: block;
+}
+
+.options button {
+  display: block;
+  margin: 10px 0;
+}
+
+.result ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+}
+
+.result li {
+  background: linear-gradient(90deg, #e3f2fd, #c8e6c9);
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+#download-btn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background-color: #66bb6a;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#download-btn:hover {
+  background-color: #388e3c;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #e0e0e0;
+  height: 15px;
+  border-radius: 10px;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.arrow-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.arrow-btns button {
+  width: 48%;
+}
+
+.question button.selected {
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1e7e34;
+}
+.info-icon {
+  float: right;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  color: #003399;
+  margin-left: 10px;
+}
+
+#popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fffaf4;
+  border: 2px solid #deb887;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  width: 80%;
+  max-width: 600px;
+  z-index: 9999;
+  border-radius: 16px;
+  font-family: 'Georgia', serif;
+  color: #5e4b3c;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+/* Popup close button (optional) */
+#popup-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #9c6b30;
+}
+
+/* Description text */
+#popup-description {
+  white-space: pre-line;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* For dimming the background when popup is active */
+#popup-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9998;
+}
+
+/* Optional animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#popup {
+  animation: fadeIn 0.3s ease-in-out;
+}
+    </style>
+</head>
+<body>
+    <body>
+        <header>
+            <img src="logo.png" alt="Ayurniti-Logo">
+            <nav>
+              <a href="./index.html" >Home</a>
+              <a href="./services.html "class="active">Services</a>
+              <a href="./Prakriti.html"  >Prakriti</a>
+              <a href="./about.html" >About</a>
+              <a href="./contact.html">Contact Us</a>
+              <a href="./login.html">Log-in</a>
+        
+        
+            </nav>
+          </header>
+        <div class="main-section">
+            <h2>What We Do</h2>
+            <p>We combine ancient Ayurvedic Wisdom with cutting-edge Technology to provide personalized wellness
+                guidance.Our chatbot assesses your prakriti,or constitution, and offers tailored diet and lifestyle
+                recommendations to help you achieve balance and harmony in your life.</p>
+        </div>
+    
+        <div class="container">
+    
+    
+            <!-- <div class="card">
+                <div class="content">
+                    <h3>
+                        <img src="" alt="Vata-Icon">
+    
+                    </h3>
+                    <p></p>
+                    <p></p>
+                </div>
+                <div class="overlay"></div>
+            </div> -->
+            <div class="card">
+                <div class="content">
+                    <div class="overlay-container">
+                        <div class="overlay">
+    
+                        </div>
+                    </div>
+                    <img src="vata.png" alt="Pitta-Icon" />
+                    <h3>
+                        vata
+                    </h3>
+                    <div style="flex: 1; overflow-y: auto;">
+                        <p>
+                            Vata combines air and space, also called ether.It has links to change, mobility, and
+                            movement.According to Ayurvedic medicine, it relates to the nervous system and controls breathing,
+                            thinking, and circulation.
+                        </p>
+                        <p>
+                            People with a Vata constitution are typically energetic,creative and flexible, but they may have
+                            insufficient or moderate weight, dry skin, and fine hair.
+                        </p>
+                    </div>
+                </div>
+                <!-- <div class="overlay"></div> -->
+            </div>
+    
+    
+            <div class="card">
+                <div class="content">
+                    <div class="overlay-container">
+                        <div class="overlay">
+    
+                        </div>
+                    </div>
+                    <img src="pitta.png" alt="Pitta-Icon" />
+                    <h3>
+                        Pitta
+                    </h3>
+                    <div style="flex: 1; overflow-y: auto;">
+                        <p>
+                            Pitta's elemental makeup consists of Fire and water. It governs
+                            digestion, body temperature, and metabolism. Those with a pitta
+                            constitution are often focused and driven, with a strong build.
+                        </p>
+                        <p>
+                            Pitta-dominant people may have oily skin, a warm body temperature,
+                            and a sharp intellect.
+                        </p>
+                    </div>
+                </div>
+                <!-- <div class="overlay"></div> -->
+            </div>
+    
+            <div class="card">
+                <div class="content">
+                    <div class="overlay-container">
+                        <div class="overlay">
+    
+                        </div>
+                    </div>
+                    <img src="kapha.png" alt="Kapha-Icon">
+                    <h3>
+                        Kapha
+                    </h3>
+                    <div style="flex: 1; overflow-y: auto;">
+                        <p>Kapha is based on Earth and Water. It can be described as steady, stable, heavy, and grounded.This
+                            dosha governs structure, stability, and lubrication within the body.</p>
+                        <p>People with a Kapha constitution often have a calm temperature, well-built bodies, and smooth,
+                            radiant skin.</p>
+                    </div>
+                </div>
+                <!-- <div class="overlay"></div> -->
+            </div>
+            <button id="chatbotBtn" class="chatbot-button">💬</button>        </div>
+        <!-- 💬 Chatbot Modal -->
+<div id="chatbotModal" class="chatbot-modal">
+    <!-- <div class="chatbot-wrapper"> -->
+      <button class="chatbot-close-icon" id="chatbot-close-icon">&times;</button>
+      
+      <!-- Paste from chtabot.html (body content only) -->
+      <div class="chatbot-container">
+        <!-- Keep all the chatbot content as-is from chtabot.html -->
+        <!-- BEGIN chatbot content -->
+        <div class="chatbot-container">
+          <div class="chatbot-header">
+            AyurNiti Chatbot
+           <br>
+            <img src="images/logo.png" alt="AyurNiti Image" style="width:100%; margin-top:10px; border-radius:12px;">
+          </div>
+      
+          <div class="input-group" id="user-input">
+            <input type="text" id="name" placeholder="Enter your name">
+            <input type="number" id="age" placeholder="Enter your age">
+            <select id="gender">
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+            <button id="start-btn">Start Assessment</button>
+          </div>
+      
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+      
+          <div id="quiz"></div>
+          <div class="result" id="result"></div>
+          <button id="download-btn" style="display:none">Download PDF</button>
+        </div>
+         
+        <!-- Paste everything from <div class="chatbot-container">...</div> here -->
+      </div>
+      <!-- <button class="close-chatbot-btn" id="closeChatbot"></button> -->
+      <!-- END chatbot content -->
+    </div>
+    <div id="popup-overlay"></div>
+  <div id="popup">
+    <span id="popup-close" onclick="closePopup()">×</span>
+    <div id="popup-description"></div>
+  </div>
+  </div>
+    
+  <script>
+    document.getElementById('chatbot-close-icon').addEventListener('click', function () {
+    document.querySelector('.chatbot-modal').style.display = 'none';
+  });
+  </script>
+  <script>
+  const startBtn = document.getElementById("start-btn");
+  const quizContainer = document.getElementById("quiz");
+  const resultContainer = document.getElementById("result");
+  const progressFill = document.getElementById("progress-fill");
+  const downloadBtn = document.getElementById("download-btn");
+  
+  const questions = [
+    { q: "How would you describe your body frame?", options: ["Slim & light", "Medium build", "Broad and heavy", "Lean but muscular"] },
+    { q: "How is your appetite?", options: ["Irregular", "Strong & sharp", "Slow but steady", "Highly variable"] },
+    { q: "How would you describe your sleep?", options: ["Light & interrupted", "Moderate", "Deep & long", "Hard to fall asleep"] },
+    { q: "How is your skin typically?", options: ["Dry & rough", "Warm & oily", "Cool & smooth", "Sensitive"] },
+    { q: "What is your emotional tendency?", options: ["Anxious", "Irritable", "Calm", "Excitable"] },
+    { q: "How do you handle stress?", options: ["Overthink", "Get angry", "Withdraw", "Get restless"] },
+    { q: "How is your digestion?", options: ["Variable", "Quick", "Slow", "Unpredictable"] },
+    { q: "How do you feel in cold weather?", options: ["Dislike it", "Enjoy it", "Neutral", "Prefer warmth"] },
+    { q: "Your energy levels are...", options: ["Fluctuating", "High but can burn out", "Consistent", "Spike randomly"] },
+    { q: "Your memory is...", options: ["Quick but forgetful", "Sharp & focused", "Slow but steady", "Erratic"] }
+  ];
+  const questionInfo = [
+    {
+      desc: `
+  Body Frame Types
+  Body frame refers to the natural structure and build of an individual, influenced by genetics and natural constitution.
+  
+  Slim & Light: Characterized by a narrow bone structure, prominent joints, and low body fat. These individuals often appear delicate and thin.
+  
+  Medium Build: Marked by a moderate bone structure, good muscle tone, and balanced body proportions. The body appears athletic and well-shaped.
+  
+  Broad and Heavy: Features a larger bone structure, wide shoulders or hips, and a stocky or heavyset build, often retaining more fat and strength.
+  
+  Lean but Muscular: A firm, toned appearance with defined muscles, suggesting a naturally active and strong frame.
+  `
+    },
+    {
+      desc: `
+  Appetite & Metabolism
+  Appetite reflects how frequently and strongly you feel hungry, and how your body processes food.
+  
+  Irregular: Hunger comes and goes unpredictably, sometimes absent or very light.
+  
+  Strong & Sharp: You feel hungry often and may get irritable if meals are delayed.
+  
+  Slow but Steady: Hunger is less frequent but consistent; you prefer smaller meals.
+  
+  Highly Variable: Appetite shifts dramatically—very hungry some days, little to none on others.
+  `
+    },
+    {
+      desc: `
+  Sleep Patterns
+  Sleep patterns indicate how easily you fall asleep and the quality of your rest.
+  
+  Light & Interrupted: You wake up frequently or find it hard to stay asleep.
+  
+  Moderate: You usually sleep well and feel rested without sleeping excessively.
+  
+  Deep & Long: You sleep heavily for long durations and may feel groggy after waking.
+  
+  Hard to Fall Asleep: You often lie awake or take a long time to fall asleep.
+  `
+    },
+    {
+      desc: `
+  Skin Characteristics
+  Skin texture, temperature, and appearance can reflect your underlying tendencies.
+  
+  Dry & Rough: Skin tends to be flaky, dry, or rough, especially in colder or dry conditions.
+  
+  Warm & Oily: Skin feels warm to the touch and may be prone to oiliness or sensitivity.
+  
+  Cool & Smooth: Skin is soft, thick, and moist with a cool feel.
+  
+  Sensitive: Skin reacts quickly to changes or stimuli, becoming red or irritated easily.
+  `
+    },
+    {
+      desc: `
+  Emotional Tendency
+  Emotions often follow consistent patterns based on personal temperament and mindset.
+  
+  Anxious: You frequently feel worried, tense, or uneasy.
+  
+  Irritable: You become frustrated or angry easily, especially under pressure.
+  
+  Calm: You remain composed, compassionate, and steady in most situations.
+  
+  Excitable: You react quickly with enthusiasm or agitation depending on the situation.
+  `
+    },
+    {
+      desc: `
+  Stress Response
+  How you react to pressure or challenging situations reflects your coping style.
+  
+  Overthink: You dwell on thoughts and possibilities, often feeling overwhelmed.
+  
+  Get Angry: You respond to stress with irritation, frustration, or intensity.
+  
+  Withdraw: You tend to shut down emotionally or become passive under stress.
+  
+  Get Restless: You become fidgety or hyperactive, finding it hard to sit still or focus.
+  `
+    },
+    {
+      desc: `
+  Digestive Pattern
+  Digestion involves how efficiently your body processes food and maintains regularity.
+  
+  Variable: Digestion is inconsistent—sometimes quick, other times sluggish—with occasional gas or constipation.
+  
+  Quick: Food digests rapidly, sometimes leading to feelings of hunger shortly after eating.
+  
+  Slow: Digestion takes time, and you may feel full or heavy after meals.
+  
+  Unpredictable: Digestion changes frequently with no clear pattern.
+  `
+    },
+    {
+      desc: `
+  Weather Sensitivity
+  Your physical and mental comfort can vary based on environmental conditions.
+  
+  Dislike Cold: You feel discomfort or stiffness in colder temperatures.
+  
+  Enjoy Cold: You feel more energetic or at ease in cool weather.
+  
+  Neutral: You adapt easily to most climates without strong preferences.
+  
+  Prefer Warmth: You feel most comfortable in warm or mildly sunny weather.
+  `
+    },
+    {
+      desc: `
+  Energy Levels
+  Daily energy flow gives insight into your stamina, drive, and rest patterns.
+  
+  Fluctuating: Energy comes in waves, often rising and falling throughout the day.
+  
+  High but Burns Out: You start strong but tire quickly after intense focus or activity.
+  
+  Consistent: Your energy builds slowly but stays steady throughout the day.
+  
+  Spike Randomly: Your energy surges unpredictably, often tied to excitement or multitasking.
+  `
+    },
+    {
+      desc: `
+  Memory Type
+  Memory style reflects how you absorb, retain, and recall information.
+  
+  Quick but Forgetful: You learn quickly but may struggle with long-term retention.
+  
+  Sharp & Focused: You grasp details clearly and recall them with precision.
+  
+  Slow but Steady: It takes time to learn, but once you do, the memory is long-lasting.
+  
+  Erratic: Your memory comes and goes—sometimes sharp, other times unreliable.
+  `
+    }
+  ];
+  
+  
+  
+  function showPopup(index) {
+    const popup = document.getElementById("popup");
+    const popupImg = document.getElementById("popup-image");
+    const popupDesc = document.getElementById("popup-description");
+  
+    popupImg.src = questionInfo[index].image;
+    popupDesc.innerText = questionInfo[index].desc;
+  
+    popup.style.display = "flex";
+  }
+  
+  
+  let currentQuestion = 0;
+  let answers = [];
+  let userName = '';
+  let userAge = '';
+  let userGender = '';
+  let userPrakriti = '';
+  let userTips = [];
+  
+  function showQuestion() {
+    quizContainer.innerHTML = '';
+    if (currentQuestion < questions.length) {
+      const qObj = questions[currentQuestion];
+      const qDiv = document.createElement('div');
+      qDiv.classList.add('question', 'active');
+  
+      const qTitle = document.createElement('h3');
+      qTitle.innerHTML = `${currentQuestion + 1}. ${qObj.q} <span class="info-icon" onclick="showPopup(${currentQuestion})">❗</span>`;
+      qDiv.appendChild(qTitle);
+  
+      qObj.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+  
+        if (answers[currentQuestion] === idx) {
+          btn.classList.add('selected');
+        }
+  
+        btn.onclick = () => {
+          answers[currentQuestion] = idx;
+          showQuestion();
+        };
+        qDiv.appendChild(btn);
+      });
+  
+      const navDiv = document.createElement('div');
+      navDiv.classList.add('arrow-btns');
+  
+      const prevBtn = document.createElement('button');
+      prevBtn.innerText = "← Previous";
+      prevBtn.disabled = currentQuestion === 0;
+      prevBtn.onclick = () => {
+        currentQuestion--;
+        showQuestion();
+      };
+      navDiv.appendChild(prevBtn);
+  
+      const nextBtn = document.createElement('button');
+      nextBtn.innerText = (currentQuestion === questions.length - 1) ? "Finish →" : "Next →";
+      nextBtn.disabled = answers[currentQuestion] === undefined;
+      nextBtn.onclick = () => {
+        if (currentQuestion < questions.length - 1) {
+          currentQuestion++;
+          showQuestion();
+        } else {
+          showResult();
+        }
+      };
+      navDiv.appendChild(nextBtn);
+  
+      qDiv.appendChild(navDiv);
+      quizContainer.appendChild(qDiv);
+  
+      progressFill.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+    }
+  }
+  
+  
+  function determinePrakriti() {
+    const score = answers.reduce((a, b) => a + b, 0);
+    if (score < 10) return "Vata";
+    if (score < 20) return "Pitta";
+    return "Kapha";
+  }
+  
+  function showResult() {
+    quizContainer.innerHTML = '';
+    progressFill.style.width = `100%`;
+    const prakriti = determinePrakriti();
+  
+    const tips = {
+      Vata: [
+        "Eat warm, moist, and grounding foods",
+        "Avoid raw and cold meals",
+        "Practice calming activities like yoga",
+        "Stay warm and avoid cold winds",
+        "Sleep early and maintain good rest",
+        "Stay hydrated with warm fluids"
+      ],
+      Pitta: [
+        "Eat fresh, cooling foods",
+        "Avoid spicy and fried foods",
+        "Spend time in nature",
+        "Avoid conflict and overexertion",
+        "Practice meditation or calming hobbies",
+        "Use coconut oil or aloe vera for skincare",
+       
+      ],
+      Kapha: [
+        "Wake up early and stay active",
+        "Eat light, dry, and warm meals",
+        "Avoid dairy and fried foods",
+        "Incorporate vigorous exercise",
+        "Engage in energizing routines",
+        "Practice deep breathing",
+        
+      ]
+    };
+  
+    userPrakriti = prakriti;
+    userTips = tips[prakriti];
+  
+    resultContainer.innerHTML = `
+      <h3>${userName}, your Prakriti Type is: ${prakriti}</h3>
+      <ul>
+        ${userTips.map((tip, idx) => `<li><strong>Tip ${idx + 1}:</strong> ${tip}</li>`).join('')}
+      </ul>
+      <p style="margin-top: 20px; font-size: 12px; color: #888;">© 2025 AyurNiti | For educational purposes only</p>
+    `;
+    downloadBtn.style.display = "inline-block";
+  }
+  
+  startBtn.addEventListener("click", () => {
+    const nameInput = document.getElementById("name").value;
+    const ageInput = document.getElementById("age").value;
+    const genderInput = document.getElementById("gender").value;
+    if (!nameInput || !ageInput || !genderInput) {
+      alert("Please fill all fields.");
+      return;
+    }
+    userName = nameInput;
+    userAge = ageInput;
+    userGender = genderInput;
+    document.getElementById("user-input").style.display = "none";
+    showQuestion();
+  });
+  
+  downloadBtn.addEventListener("click", () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("p", "mm", "a4");
+  
+  const questionsAndAnswers = questions.map((q, i) => ({
+  q: q.q,
+  a: q.options[answers[i]] || "Not answered"
+  }));
+  
+  // Border
+  doc.setDrawColor(34, 85, 51);
+  doc.setLineWidth(3);
+  doc.rect(5, 5, 200, 287);
+  
+  // Header
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.setTextColor(0, 85, 51);
+  doc.text("AyurNiti Prakriti Assessment Report", 105, 20, { align: "center" });
+  
+  // Info Box (compact and inline)
+  doc.setDrawColor(0, 102, 102);
+  doc.setFillColor(230, 255, 240);
+  doc.rect(20, 28, 170, 20, "FD");
+  doc.setFontSize(12);
+  doc.setTextColor(0);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Name: ${userName}   |   Age: ${userAge}   |   Gender: ${userGender}   |   Prakriti: ${userPrakriti}`, 25, 40);
+  
+  // Response Box (blue)
+  // Response Box (blue)
+  let y = 55;
+  doc.setDrawColor(0, 0, 102);
+  doc.setFillColor(240, 245, 255);
+  doc.rect(20, y, 170, 160, "FD"); // ← increased from 130 to 150
+  
+  doc.setTextColor(0, 0, 102);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  doc.text("Your Responses", 25, y + 8);
+  
+  y += 15;
+  doc.setTextColor(0);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  
+  questionsAndAnswers.forEach((item, i) => {
+  doc.text(`${i + 1}. ${item.q}`, 25, y);
+  y += 6;
+  doc.text(`   Answer: ${item.a}`, 30, y);
+  y += 9;
+  });
+  
+  // Health Tips Box (after responses)
+  y += 1; // ← reduced space from the previous box
+  doc.setDrawColor(0, 153, 0);
+  doc.setFillColor(240, 255, 240);
+  doc.rect(20, y, 170, 65, "FD");
+  
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(0, 128, 0);
+  doc.setFontSize(13);
+  doc.text("Health Tips", 25, y + 8);
+  
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(0);
+  doc.setFontSize(11);
+  let tipY = y + 16;
+  userTips.forEach((tip) => {
+  doc.text(`• ${tip}`, 25, tipY);
+  tipY += 8;
+  });
+  // Footer
+  doc.setTextColor(100);
+  doc.setFontSize(10);
+  doc.text("© 2025 AyurNiti | For educational purposes only", 105, 282, { align: "center" });
+  
+  doc.save(`${userName}_Prakriti_Assessment.pdf`);
+  });
+  
+  
+  </script>
+  <script>
+  const toggleBtn = document.getElementById("chatbotToggle");
+  const container = document.getElementById("chatbotContainer");
+  
+  toggleBtn.addEventListener("click", () => {
+    container.style.display = container.style.display === "block" ? "none" : "block";
+  });
+  </script>
+  
+  
+  
+        <script>
+        function openChatbot() {
+          document.getElementById("chatbotContainer").style.display = "block";
+        }
+      </script>
+  
+  
+      <script>
+        const chatbotBtn = document.getElementById("chatbotBtn");
+        const chatbotModal = document.getElementById("chatbotModal");
+        
+        chatbotBtn.onclick = () => {
+          chatbotModal.style.display = "block";
+        };
+      
+        closeBtn.onclick = () => {
+          chatbotModal.style.display = "none";
+        };
+      
+        window.onclick = (event) => {
+          if (event.target == chatbotModal) {
+            chatbotModal.style.display = "none";
+          }
+        };
+      </script>
+      <script>
+        function showPopup(index) {
+    const popup = document.getElementById("popup");
+    const popupDesc = document.getElementById("popup-description");
+    const overlay = document.getElementById("popup-overlay");
+  
+    popupDesc.innerText = questionInfo[index].desc;
+  
+    popup.style.display = "flex";
+    overlay.style.display = "block";
+  }
+  
+  function closePopup() {
+    document.getElementById("popup").style.display = "none";
+    document.getElementById("popup-overlay").style.display = "none";
+  }
+  
+      </script>
+      <div class="popup-overlay" id="popup">
+        <div class="popup-content">
+          <img id="popup-image" src="" alt="Question Help">
+          <p id="popup-description"></p>
+          <button class="popup-close" onclick="document.getElementById('popup').style.display='none'">Close</button>
+        </div>
+      </div>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburger Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f8f8;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* HAMBURGER ICON */
+        .hamburger {
+            width: 30px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .bar {
+            width: 100%;
+            height: 4px;
+            background-color: black;
+            border-radius: 5px;
+            transition: 0.4s;
+        }
+
+        /* CHECKBOX TOGGLE */
+        #menu-toggle {
+            display: none;
+        }
+
+        /* SIDEBAR MENU */
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -250px; /* Hidden initially */
+            width: 250px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: 0.4s ease-in-out;
+        }
+
+        .menu img {
+            width: 50px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .menu h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .menu p {
+            font-size: 14px;
+            color: gray;
+            margin-bottom: 20px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            text-decoration: none;
+            color: black;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .menu a:hover {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        .menu a i {
+            margin-right: 10px;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        /* SHOW MENU WHEN CHECKED */
+        #menu-toggle:checked + .menu {
+            left: 0;
+        }
+
+        /* TRANSFORM HAMBURGER ICON WHEN OPEN */
+        #menu-toggle:checked ~ .navbar .hamburger .bar:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        #menu-toggle:checked ~ .navbar .hamburger .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        #menu-toggle:checked ~ .navbar .hamburger .bar:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HAMBURGER MENU TOGGLE -->
+    <input type="checkbox" id="menu-toggle">
+
+    <!-- SIDEBAR MENU -->
+    <div class="menu">
+        <label for="menu-toggle" class="close-btn">✖</label>
+        <img src="https://via.placeholder.com/50" alt="User Profile">
+        <h3>Welcome! to Ayurniti </h3>
+        <p>Ayurniti@gmail.com</p>
+        <a href="./home.html">Home</a>
+        <a href="./services.html">Services</a>
+        <a href="./about.html">About</a>
+        <a href="./Prakriti.html">Prakriti</a>
+        <a href="./contact.html">Contact Us</a>
+        <a href="./login.html">Login</a>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <label for="menu-toggle" class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </label>
+    </nav>
+
+</body>
+</html>

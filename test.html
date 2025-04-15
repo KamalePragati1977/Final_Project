@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburger Menu</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f8f8;
+            margin: 0;
+        }
+
+        /* Hidden checkbox */
+        #menu-toggle {
+            display: none;
+        }
+
+        /* Hamburger Icon */
+        .menu-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 40px;
+            height: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+        }
+
+        .bar {
+            width: 100%;
+            height: 5px;
+            background-color: black;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        /* Hamburger animation */
+        #menu-toggle:checked + .menu-btn .bar:nth-child(1) {
+            transform: translateY(12px) rotate(45deg);
+        }
+
+        #menu-toggle:checked + .menu-btn .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        #menu-toggle:checked + .menu-btn .bar:nth-child(3) {
+            transform: translateY(-12px) rotate(-45deg);
+        }
+
+        /* Navigation Menu */
+        .menu {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            width: 200px;
+            display: none;
+            flex-direction: column;
+            background-color: #A8D5BA;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        /* Show menu when checked */
+        #menu-toggle:checked ~ .menu {
+            display: flex;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #234;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #A8D5BA;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .menu a:hover {
+            background-color: #8fbf9f;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Hidden Checkbox -->
+    <input type="checkbox" id="menu-toggle">
+    
+    <!-- Hamburger Icon -->
+    <label for="menu-toggle" class="menu-btn">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </label>
+
+    <!-- Menu Items -->
+    <nav class="menu">
+        <a href="./home.html">Home</a>
+        <a href="./services.html">Services</a>
+        <a href="./Prakriti.html">Prakriti</a>
+        <a href="./about.html">About</a>
+        <a href="./contact.html">Contact Us</a>
+        <a href="./login.html">Log-in</a>
+    </nav>
+
+</body>
+</html>
